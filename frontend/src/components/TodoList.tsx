@@ -1,36 +1,19 @@
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-let testData = [
-  {
-    id: "id1",
-    title: "hellow",
-    desc: "world"
-  },
-  {
-    id: "id0",
-    title: "hellow",
-    desc: "world"
-  },
-  {
-    id: "id2",
-    title: "hellow",
-    desc: "world",
-    done: false,
-  },
-  {
-    id: "id4",
-    title: "hellow",
-    desc: "worldlo Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
-    done: true
-  },
-]
 
 
-export default function TodoList() {
-  const onDragEnd = useCallback(() => {
-    console.log("hey")
-  }, []);
+export default function TodoList({ data, setData }) {
+
+  const onDragEnd = (result: any) => {
+    const source = result.source.index
+    const destination = result.destination?.index
+    if (destination == undefined) return
+
+    data = reorder(data, source, destination)
+    setData(data)
+  }
+
 
   return (
     <DragDropContext onDragEnd={onDragEnd} >
@@ -38,8 +21,8 @@ export default function TodoList() {
         {(provided: any, _: any) => (
           <section ref={provided.innerRef} {...provided.droppableProps}>
 
-            {testData.map((todoitem: TodoItemProps, idx) => (
-              <Draggable draggableId={todoitem.id} index={idx} key={todoitem.id}>
+            {data.map((todoitem: TodoItemProps, idx: Number) => (
+              <Draggable draggableId={todoitem._id} index={idx} key={todoitem._id}>
 
                 {(provided: any, _: any) => (
                   <div
@@ -48,7 +31,7 @@ export default function TodoList() {
                     {...provided.dragHandleProps}
                   >
 
-                    <TodoItem id={todoitem.id} title={todoitem.title} desc={todoitem.desc} isDone={todoitem.isDone} />
+                    <TodoItem _id={todoitem._id} title={todoitem.title} desc={todoitem.desc} isDone={todoitem.isDone} />
                   </div>
                 )}
 
@@ -65,10 +48,10 @@ export default function TodoList() {
 
 
 interface TodoItemProps {
-  id: string,
+  _id: string,
   title: string,
   desc: string,
-  isDone?: boolean,
+  isDone: boolean,
 }
 
 function TodoItem(props: TodoItemProps) {
@@ -80,9 +63,17 @@ function TodoItem(props: TodoItemProps) {
 
   return (
 
-    <div className={style}> <input className="cursor-pointer" type="checkbox" checked={isDone} onClick={_ => (setIsDone(!isDone))} />
+    <div className={style}> <input className="cursor-pointer" type="checkbox" checked={isDone} onChange={_ => (setIsDone(!isDone))} />
       <span className="ml-3 text-lg font-bold">{props.title} : </span><span>{props.desc}</span>
     </div >
 
   )
 }
+
+const reorder = (list: TodoItemProps[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};

@@ -3,6 +3,10 @@ import mongoose from "mongoose"
 const { Schema, model } = mongoose
 
 const todoItemSchema = new Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -10,11 +14,6 @@ const todoItemSchema = new Schema({
   desc: {
     type: String,
     required: true,
-  },
-  index: {
-    type: Number,
-    required: true,
-    unique: true,
   },
   isDone: {
     type: Boolean,
