@@ -1,3 +1,4 @@
 {
-  "MongoURI": "mongodb+srv://sujeetmehta6:lIcVANcKJ4fWf0MS@cluster0.2hdho8w.mongodb.net/?retryWrites=true&w=majority"
+  // Add your mongo db token here.
+  "MongoURI": ""
 }
